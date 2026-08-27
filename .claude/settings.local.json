@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "WebFetch(domain:claude.ai)",
+      "Bash(npx tsc *)",
+      "Bash(npx shadcn@latest *)"
+    ]
+  }
+}
