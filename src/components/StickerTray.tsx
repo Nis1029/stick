@@ -2,8 +2,6 @@ import { motion } from 'framer-motion'
 import { useStore } from '../store/useStore'
 import type { Sticker } from '../types'
 
-const CARD = 88
-
 interface StickerCardProps {
   sticker: Sticker
   index: number
@@ -17,8 +15,7 @@ function StickerCard({ sticker, index, onDoubleClick }: StickerCardProps) {
 
   return (
     <div
-      className="relative flex-shrink-0 group cursor-grab active:cursor-grabbing"
-      style={{ width: CARD }}
+      className="relative group cursor-grab active:cursor-grabbing"
       draggable
       onDragStart={(e: React.DragEvent) => {
         e.dataTransfer.setData('imageUrl', displayUrl)
@@ -33,11 +30,8 @@ function StickerCard({ sticker, index, onDoubleClick }: StickerCardProps) {
         whileHover={{ scale: 1.04, y: -2 }}
         className="w-full"
       >
-        {/* Görsel kutusu — × içeride, overflow-hidden yok */}
-        <div
-          className="relative rounded-xl bg-gray-100 border border-gray-200 shadow-sm"
-          style={{ width: CARD, height: CARD }}
-        >
+        {/* Görsel kutusu — × içeride, overflow-hidden yok — kart boyutu grid hücresine göre otomatik ölçekleniyor */}
+        <div className="relative w-full aspect-square rounded-xl bg-gray-100 border border-gray-200 shadow-sm">
           {sticker.processing ? (
             <div className="w-full h-full flex flex-col items-center justify-center rounded-xl gap-1.5">
               <div className="w-3.5 h-3.5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
@@ -85,11 +79,6 @@ export function StickerTray({ onDoubleClick }: StickerTrayProps) {
   const stickers = useStore((s) => s.stickers)
   const reversed = [...stickers].reverse()
 
-  const chunks: typeof stickers[] = []
-  for (let i = 0; i < reversed.length; i += 4) {
-    chunks.push(reversed.slice(i, i + 4))
-  }
-
   if (stickers.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 gap-2">
@@ -99,18 +88,14 @@ export function StickerTray({ onDoubleClick }: StickerTrayProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3 overflow-y-auto flex-1">
-      {chunks.map((chunk, ci) => (
-        <div key={ci} className="flex gap-2">
-          {chunk.map((s, i) => (
-            <StickerCard
-              key={s.id}
-              sticker={s}
-              index={ci * 4 + i}
-              onDoubleClick={onDoubleClick}
-            />
-          ))}
-        </div>
+    <div className="grid grid-cols-4 gap-2 overflow-y-auto flex-1 content-start">
+      {reversed.map((s, i) => (
+        <StickerCard
+          key={s.id}
+          sticker={s}
+          index={i}
+          onDoubleClick={onDoubleClick}
+        />
       ))}
     </div>
   )

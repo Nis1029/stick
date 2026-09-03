@@ -185,7 +185,7 @@ function App() {
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sol panel — cam efekti */}
-          <aside className="w-[400px] bg-white/30 backdrop-blur-md border-r border-white/30 flex flex-col px-3 py-4 gap-3 min-h-0">
+          <aside className="w-[220px] md:w-[280px] lg:w-[400px] bg-white/30 backdrop-blur-md border-r border-white/30 flex flex-col px-3 py-4 gap-3 min-h-0">
             <button
               onClick={() => fileInputRef.current?.click()}
               className="w-full flex items-center justify-center gap-3 border-[3px] border-dashed border-white/70 rounded-2xl py-7 text-base font-bold text-gray-800 hover:border-white/80 hover:bg-white/20 transition-all active:scale-95"
