@@ -23,7 +23,11 @@ export function SharePanel({ pages, currentPage, getCurrentJSON }: SharePanelPro
   async function handlePDF() {
     setOpen(false)
 
-    // Kullanıcı gesturesi kaybolmadan önce dosya konumunu seç
+    // Kullanıcı gesturesi kaybolmadan önce dosya konumunu seç.
+    // showSaveFilePicker desteklenmiyorsa ya da herhangi bir sebeple
+    // başarısız olursa (kullanıcı iptal, izin politikası, tarayıcı kısıtlaması vb.)
+    // sessizce hiçbir şey yapmadan çıkmak yerine normal indirmeye düşüyoruz —
+    // aksi halde kullanıcı hiçbir geri bildirim almadan "hiçbir şey olmuyor" hissine kapılıyor.
     let fileHandle: FileSystemFileHandle | null = null
     if ('showSaveFilePicker' in window) {
       try {
@@ -31,8 +35,8 @@ export function SharePanel({ pages, currentPage, getCurrentJSON }: SharePanelPro
           suggestedName: 'stickers.pdf',
           types: [{ description: 'PDF Dosyası', accept: { 'application/pdf': ['.pdf'] } }],
         })
-      } catch (e) {
-        if ((e as Error).name === 'AbortError') return
+      } catch {
+        fileHandle = null
       }
     }
 
@@ -48,8 +52,10 @@ export function SharePanel({ pages, currentPage, getCurrentJSON }: SharePanelPro
         const a = document.createElement('a')
         a.href = url
         a.download = 'stickers.pdf'
+        document.body.appendChild(a)
         a.click()
-        URL.revokeObjectURL(url)
+        a.remove()
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
       }
     } finally {
       setLoading(null)
