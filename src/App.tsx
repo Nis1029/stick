@@ -116,18 +116,10 @@ function App() {
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []).filter(f => f.type.startsWith('image/') || f.type === '')
+    if (files.length) addStickers(files)
     e.target.value = ''
-    if (!files.length) return
-    try {
-      await addStickers(files)
-      // GEÇİCİ TEŞHİS
-      alert(`${files.length} görsel eklendi (teşhis)`)
-    } catch (err) {
-      // GEÇİCİ TEŞHİS: gerçek hatayı görmek için — asıl neden bulununca kaldırılacak
-      alert('Görsel eklenirken hata oluştu: ' + (err instanceof Error ? `${err.name}: ${err.message}` : String(err)))
-    }
   }
 
   function handleZoom(dir: number) {

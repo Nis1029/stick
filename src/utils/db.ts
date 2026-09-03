@@ -23,17 +23,24 @@ function getDB() {
 }
 
 // Orijinal görsel blob'u kaydet
+// Not: Blob'u doğrudan IndexedDB'ye yazmıyoruz — Safari (özellikle iOS/iPadOS)
+// bunu bazı durumlarda seri hale getiremeyip "Error preparing Blob/File data
+// to be stored in object store" hatası veriyor. ArrayBuffer + type olarak
+// saklamak tüm tarayıcılarda güvenilir çalışıyor.
 export async function saveBlob(id: string, blob: Blob): Promise<string> {
   const db = await getDB()
-  await db.put('blobs', blob, id)
+  const buffer = await blob.arrayBuffer()
+  await db.put('blobs', { buffer, type: blob.type }, id)
   return URL.createObjectURL(blob)
 }
 
 export async function loadBlob(id: string): Promise<string | null> {
   const db = await getDB()
-  const blob = await db.get('blobs', id)
-  if (!blob) return null
-  return URL.createObjectURL(blob)
+  const record = await db.get('blobs', id)
+  if (!record) return null
+  // Eski kayıtlar ham Blob olarak saklanmış olabilir — geriye dönük uyumluluk
+  if (record instanceof Blob) return URL.createObjectURL(record)
+  return URL.createObjectURL(new Blob([record.buffer], { type: record.type }))
 }
 
 export async function deleteBlob(id: string) {
