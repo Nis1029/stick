@@ -1,6 +1,6 @@
 export function Navbar({ right }: { right?: React.ReactNode }) {
   return (
-    <header className="h-16 bg-white/20 backdrop-blur-sm border-b border-white/15 flex items-center px-6 flex-shrink-0">
+    <header className="relative z-20 h-16 bg-white/20 backdrop-blur-sm border-b border-white/15 flex items-center px-6 flex-shrink-0">
       <div className="flex-1" />
 
       <span
