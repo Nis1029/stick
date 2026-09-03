@@ -117,7 +117,7 @@ function App() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []).filter(f => f.type.startsWith('image/'))
+    const files = Array.from(e.target.files ?? []).filter(f => f.type.startsWith('image/') || f.type === '')
     if (files.length) addStickers(files)
     e.target.value = ''
   }
